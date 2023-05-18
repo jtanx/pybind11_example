@@ -1,43 +1,13 @@
 #include <pybind11/pybind11.h>
+#include <string>
 
-#define STRINGIFY(x) #x
-#define MACRO_STRINGIFY(x) STRINGIFY(x)
-
-int add(int i, int j) {
-    return i + j;
+void test(const std::string& a, double b) {
+    printf("%s %g\n", a.c_str(), b);
 }
 
 namespace py = pybind11;
 
 PYBIND11_MODULE(python_example, m) {
-    m.doc() = R"pbdoc(
-        Pybind11 example plugin
-        -----------------------
-
-        .. currentmodule:: python_example
-
-        .. autosummary::
-           :toctree: _generate
-
-           add
-           subtract
-    )pbdoc";
-
-    m.def("add", &add, R"pbdoc(
-        Add two numbers
-
-        Some other explanation about the add function.
-    )pbdoc");
-
-    m.def("subtract", [](int i, int j) { return i - j; }, R"pbdoc(
-        Subtract two numbers
-
-        Some other explanation about the subtract function.
-    )pbdoc");
-
-#ifdef VERSION_INFO
-    m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
-#else
-    m.attr("__version__") = "dev";
-#endif
+    m.def("test", &test, py::arg("a"), py::arg("b"));
+    m.def("test2", &test, py::kw_only(), py::arg("a"), py::arg("b"));
 }
